@@ -20,12 +20,6 @@ require File.dirname(__FILE__) + '/google_static_maps_helper/gmap_polyline_encod
 # Author:: Thorbjørn Hermansen (thhermansen@gmail.com)
 #
 module GoogleStaticMapsHelper
-  # Set default values for configuration
-  CONFIG_KEYS = {
-    :key => nil,
-    :api_url => 'maps.google.com/maps/api/staticmap',
-    :use_https => false,
-  }
 
   class OptionMissing < ArgumentError; end # Raised when required options is not sent in during construction
   class OptionNotExist < ArgumentError; end # Raised when incoming options include keys which is invalid
@@ -35,6 +29,18 @@ module GoogleStaticMapsHelper
 
   class << self
     attr_accessor :key, :api_url, :use_https, :size, :sensor
+
+    def key
+      @key || nil
+    end
+
+    def api_url
+      @api_url || 'maps.google.com/maps/api/staticmap'
+    end
+
+    def use_https
+      @use_https || false
+    end
 
     #
     # Provides a simple DSL stripping away the need of manually instantiating classes

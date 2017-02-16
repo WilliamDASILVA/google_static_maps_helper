@@ -51,9 +51,9 @@ module GoogleStaticMapsHelper
       raise BuildDataMissing, "We have to have markers, paths or center and zoom set when url is called!" unless can_build?
 
       out = ""
-      out += "#{CONFIG_KEYS[:use_https] ? 'https://' : 'http://'}"
-      out += "#{CONFIG_KEYS[:api_url]}?"
-      out += "key=#{CONFIG_KEYS[:key]}&" unless CONFIG_KEYS[:key].nil?
+      out += "#{GoogleStaticMapsHelper.use_https ? 'https://' : 'http://'}"
+      out += "#{GoogleStaticMapsHelper.api_url}?"
+      out += "key=#{GoogleStaticMapsHelper.key}&" unless GoogleStaticMapsHelper.key.nil?
 
       params = []
       (REQUIRED_OPTIONS + OPTIONAL_OPTIONS).each do |key|
