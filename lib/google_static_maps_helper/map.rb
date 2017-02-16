@@ -49,8 +49,11 @@ module GoogleStaticMapsHelper
     #
     def url
       raise BuildDataMissing, "We have to have markers, paths or center and zoom set when url is called!" unless can_build?
-      
-      out = "#{API_URL}?"
+
+      out = ""
+      out += "#{CONFIG_KEYS[:use_https] ? 'https://' : 'http://'}"
+      out += "#{CONFIG_KEYS[:api_url]}?"
+      out += "key=#{CONFIG_KEYS[:key]}&" unless CONFIG_KEYS[:key].nil?
 
       params = []
       (REQUIRED_OPTIONS + OPTIONAL_OPTIONS).each do |key|
@@ -65,7 +68,7 @@ module GoogleStaticMapsHelper
         params << "markers=#{marker_options_as_url_params}|#{markers_locations}"
       end
       out += "&#{params.join('&')}" unless params.empty?
-      
+
       params = []
       paths.each {|path| params << path.url_params}
       out += "&#{params.join('&')}" unless params.empty?
@@ -93,13 +96,13 @@ module GoogleStaticMapsHelper
       end
     end
 
-    # 
+    #
     # Returns all the paths which this map holds
     #
     def paths
       @map_enteties.select {|e| e.is_a? Path}
     end
-    
+
     #
     # Pushes either a Marker or a Path on to the map
     #
@@ -135,7 +138,7 @@ module GoogleStaticMapsHelper
     def path(*args) # :nodoc:
       self << Path.new(*args)
     end
-    
+
     #
     # Sets the size of the map
     #
@@ -159,14 +162,14 @@ module GoogleStaticMapsHelper
         self.height = height if height
       end
     end
-    
+
     #
     # Returns size as a string, "wxh"
     #
     def size
       [@width, @height].join('x')
     end
-    
+
     #
     # Defines width and height setter methods
     #
