@@ -7,7 +7,7 @@ module GoogleStaticMapsHelper
   #
   class Map
     include Enumerable
-    
+
     MAX_WIDTH = 640
     MAX_HEIGHT = 640
 
@@ -15,8 +15,8 @@ module GoogleStaticMapsHelper
     VALID_MAP_TYPES = %w{roadmap satellite terrain hybrid}
 
     REQUIRED_OPTIONS = [:size, :sensor]
-    OPTIONAL_OPTIONS = [:key, :center, :zoom, :format, :maptype, :mobile, :language]
-    
+    OPTIONAL_OPTIONS = [:center, :zoom, :format, :maptype, :mobile, :language]
+
     attr_accessor *(REQUIRED_OPTIONS + OPTIONAL_OPTIONS)
     attr_accessor :width, :height
 

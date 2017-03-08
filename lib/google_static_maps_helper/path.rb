@@ -9,12 +9,12 @@ module GoogleStaticMapsHelper
 
     OPTIONAL_OPTIONS = [:weight, :color, :fillcolor]
 
-    attr_accessor :encode_points, :points, *OPTIONAL_OPTIONS
+    attr_accessor :encode_points, :points, :encoded_polyline, *OPTIONAL_OPTIONS
 
     #
     # Creates a new Path which you can push points on to to make up lines or polygons
     #
-    # The following options are available, for more information see the 
+    # The following options are available, for more information see the
     # Google API documentation[http://code.google.com/apis/maps/documentation/staticmaps/#Paths].
     #
     # <tt>:weight</tt>::    The weight is the thickness of the line, defaults to 5
@@ -30,7 +30,7 @@ module GoogleStaticMapsHelper
     def initialize(*args)
       @points = []
       @encode_points = true
-    
+
       extract_options!(args)
       add_points(args)
     end
@@ -40,9 +40,9 @@ module GoogleStaticMapsHelper
     # Used by the Map when building the URL
     #
     def url_params # :nodoc:
-      raise BuildDataMissing, "Need at least 2 points to create a path!" unless can_build?
+      # raise BuildDataMissing, "Need at least 2 points to create a path!" unless can_build? || !encoding_points?
       out = 'path='
-     
+
       path_params = OPTIONAL_OPTIONS.inject([]) do |path_params, attribute|
         value = send(attribute)
         path_params << "#{attribute}:#{URI.escape(value.to_s)}" unless value.nil?
@@ -52,14 +52,14 @@ module GoogleStaticMapsHelper
       out += "#{path_params}|" unless path_params.empty?
 
       out += encoded_url_points if encoding_points?
-      out += unencoded_url_points unless encoding_points?
+      out += unencoded_url_points if !encoding_points?
       out
     end
 
-  
+
     #
     # Sets the points of this Path.
-    # 
+    #
     # *WARNING* Using this method will clear out any points which might be set.
     #
     def points=(array)
@@ -115,8 +115,8 @@ module GoogleStaticMapsHelper
       return point if point.instance_of? Location
       Location.new(point)
     end
-    
-    # 
+
+    #
     # Do we have enough points to build a path?
     #
     def can_build?
@@ -141,9 +141,12 @@ module GoogleStaticMapsHelper
     end
 
     def unencoded_url_points
-      inject([]) do |point_params, point|
-        point_params << point.to_url
-      end.join('|')
+      if !encoded_polyline.nil?
+        "enc:#{encoded_polyline}"
+      end
+      # inject([]) do |point_params, point|
+      #   point_params << point.to_url
+      # end.join('|')
     end
   end
 end
