@@ -40,7 +40,6 @@ module GoogleStaticMapsHelper
     # Used by the Map when building the URL
     #
     def url_params # :nodoc:
-      # raise BuildDataMissing, "Need at least 2 points to create a path!" unless can_build? || !encoding_points?
       out = 'path='
 
       path_params = OPTIONAL_OPTIONS.inject([]) do |path_params, attribute|
@@ -52,7 +51,7 @@ module GoogleStaticMapsHelper
       out += "#{path_params}|" unless path_params.empty?
 
       out += encoded_url_points if encoding_points?
-      out += unencoded_url_points if !encoding_points?
+      out += unencoded_url_points unless encoding_points?
       out
     end
 
@@ -144,9 +143,6 @@ module GoogleStaticMapsHelper
       if !encoded_polyline.nil?
         "enc:#{encoded_polyline}"
       end
-      # inject([]) do |point_params, point|
-      #   point_params << point.to_url
-      # end.join('|')
     end
   end
 end
